@@ -122,12 +122,12 @@ func (pw *ProgressWindow) UpdateDownloadProgress(downloaded int64, filename stri
 	if downloaded == 0 {
 		return
 	}
-	glib.IdleAdd(func() bool {
+	glib.IdleAdd(func() {
 		pw.setTransferControlsSensitive(true)
 		pw.progressMutex.Lock()
 		if _, ok := pw.progressPerFile[filename]; !ok {
 			pw.progressMutex.Unlock()
-			return false
+			return 
 		}
 		pw.progressPerFile[filename] += downloaded
 		total := pw.totalDownloaded
@@ -143,7 +143,6 @@ func (pw *ProgressWindow) UpdateDownloadProgress(downloaded int64, filename stri
 			formatDownloadSize(uint64(pw.totalToDownload)),
 			formatDownloadSize(uint64(int64(pw.speedAverager.GetAverageSpeed()))),
 		))
-		return false
 	})
 }
 
